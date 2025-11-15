@@ -2,6 +2,7 @@ package com.example.weatherapp.model.service
 
 import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.model.service.client.WeatherApiInterface
+import com.example.weatherapp.model.service.response.WeatherResponse
 import javax.inject.Inject
 
 class WeatherService @Inject constructor(
@@ -12,7 +13,7 @@ class WeatherService @Inject constructor(
         const val API_KEY = BuildConfig.API_KEY
     }
 
-    fun getWeather() {
-
+    suspend fun getWeather(): WeatherResponse {
+        return client.getForecast(API_KEY, "")
     }
 }

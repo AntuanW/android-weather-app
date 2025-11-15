@@ -13,6 +13,15 @@ data class Hour(
     @SerializedName("temp_c")
     val tempC: Double,
 
+    @SerializedName("feelslike_c")
+    val feelsLikeC: Double,
+
+    @SerializedName("chance_of_rain")
+    val chanceOfRain: Int,
+
+    @SerializedName("chance_of_snow")
+    val chanceOfSnow: Int,
+
     @SerializedName("wind_kph")
     val windKph: Double,
 

@@ -11,8 +11,5 @@ data class ForecastDay(
 
     val day: Day,
 
-    @SerializedName("air_quality")
-    val airQuality: AirQuality,
-
     val hour: List<Hour>,
 )
