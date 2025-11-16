@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.model.database.WeatherAppDatabase
+import com.example.weatherapp.model.dto.WeatherSummaryFactory
+import com.example.weatherapp.model.service.WeatherService
+import com.example.weatherapp.model.service.WeatherSummaryService
 import com.example.weatherapp.model.service.client.WeatherApiInterface
 import dagger.Module
 import dagger.Provides
@@ -37,5 +40,23 @@ object WeatherAppModule {
             .build()
 
         return retrofit.create(WeatherApiInterface::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideWeatherService(api: WeatherApiInterface, factory: WeatherSummaryFactory): WeatherService {
+        return WeatherService(api, factory)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherSummaryService(weatherService: WeatherService): WeatherSummaryService {
+        return WeatherSummaryService(weatherService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherSummaryFactory(): WeatherSummaryFactory {
+        return WeatherSummaryFactory()
     }
 }

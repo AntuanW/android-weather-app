@@ -62,6 +62,8 @@ dependencies {
     val retrofit_version = "3.0.0"
     val gson_version = "2.12.0"
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
 
