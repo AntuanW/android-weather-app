@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity() {
         val weatherSummaryTextView = findViewById<TextView>(R.id.weather_summary)
 
         lifecycleScope.launch {
-            viewModel.weatherSummary.collect {
-                weatherSummaryTextView.text = it?.tempC.toString() ?: "Loading..."
+            viewModel.weatherSummary.collect { weather ->
+                weatherSummaryTextView.text = weather?.tempC?.toString() ?: "Loading..."
             }
         }
 
-        viewModel.fetchWeatherSummary("London")
+        viewModel.fetchWeatherSummary("Warsaw")
     }
 }

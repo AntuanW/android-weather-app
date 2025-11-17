@@ -41,7 +41,6 @@ class WeatherSummaryFactory {
         val chanceOfRain: Int = weatherResponse.current.chanceOfRain
         val chanceOfSnow: Int = weatherResponse.current.chanceOfSnow
 
-
         return WeatherSummary(
             airCondition = airCondition,
             temperature = temperature,
@@ -83,10 +82,7 @@ class WeatherSummaryFactory {
     private fun calculateRealTempC(tempC: Double, windKph: Double): Double {
         val windFactor = windKph.pow(WIND_SPEED_CONSTANT_2)
 
-        val sensedTemperature = BASE
-        + TEMPERATURE_CONSTANT * tempC
-        - WIND_SPEED_CONSTANT_1 * windFactor
-        + WIND_CHILL_CONSTANT * tempC * windFactor
+        val sensedTemperature = BASE + TEMPERATURE_CONSTANT * tempC - WIND_SPEED_CONSTANT_1 * windFactor + WIND_CHILL_CONSTANT * tempC * windFactor
 
         return round(sensedTemperature * 1000) / 1000
     }
