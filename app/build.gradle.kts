@@ -80,6 +80,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:$gms_version")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

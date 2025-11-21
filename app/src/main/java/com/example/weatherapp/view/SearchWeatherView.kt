@@ -2,14 +2,21 @@ package com.example.weatherapp.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,6 +42,17 @@ class SearchWeatherView : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
             val location by viewModel.location.collectAsState()
 
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
+                if (isGranted) {
+                    viewModel.fetchCurrentLocationName()
+                } else {
+                    viewModel.setError("Permission denied")
+                }
+            }
+
+
             Scaffold { innerPadding ->
                 Column(
                     modifier = Modifier
@@ -46,7 +64,17 @@ class SearchWeatherView : ComponentActivity() {
                     TextField(
                         value = location,
                         onValueChange = { viewModel.onLocationChange(it) },
-                        label = { Text("Location") }
+                        label = { Text("Location") },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                }
+                            ) {
+                                Icon(Icons.Filled.MyLocation, contentDescription = "Use current location")
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(0.9f)
                     )
 
                     Button(
