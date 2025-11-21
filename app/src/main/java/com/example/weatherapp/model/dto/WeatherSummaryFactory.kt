@@ -1,5 +1,6 @@
 package com.example.weatherapp.model.dto
 
+import android.util.Log
 import com.example.weatherapp.model.dto.weather.AirCondition
 import com.example.weatherapp.model.dto.weather.Forecast
 import com.example.weatherapp.model.dto.weather.Temperature
@@ -25,7 +26,7 @@ class WeatherSummaryFactory {
             Forecast.CLOUDY to listOf("cloudy", "overcast"),
             Forecast.HAIL to listOf("ice pellets"),
             Forecast.SNOWY to listOf("snow", "blizzard"),
-            Forecast.RAINY to listOf("rain"),
+            Forecast.RAINY to listOf("rain", "drizzle"),
         )
     }
 
@@ -40,6 +41,7 @@ class WeatherSummaryFactory {
         val forecast: Forecast = processForecast(weatherResponse.current.condition.text)
         val chanceOfRain: Int = weatherResponse.current.chanceOfRain
         val chanceOfSnow: Int = weatherResponse.current.chanceOfSnow
+        val iconUrl: String = weatherResponse.current.condition.icon
 
         return WeatherSummary(
             airCondition = airCondition,
@@ -47,7 +49,8 @@ class WeatherSummaryFactory {
             forecast = forecast,
             tempC = realTemp,
             chanceOfRain = chanceOfRain,
-            chanceOfSnow = chanceOfSnow
+            chanceOfSnow = chanceOfSnow,
+            iconUrl = iconUrl
         )
     }
 
@@ -74,16 +77,19 @@ class WeatherSummaryFactory {
     }
 
     private fun processForecast(forecast: String): Forecast {
+        Log.d("WeatherSummaryFactory", "Received forecast: $forecast")
         return FORECAST_MAP.entries.firstOrNull {
             (_, keys) -> keys.any { it in forecast.lowercase() }
         }?.key ?: Forecast.UNKNOWN
     }
 
     private fun calculateRealTempC(tempC: Double, windKph: Double): Double {
+        Log.d("WeatherSummaryFactory", "Received temp c: $tempC and wind kph $windKph")
+
         val windFactor = windKph.pow(WIND_SPEED_CONSTANT_2)
 
         val sensedTemperature = BASE + TEMPERATURE_CONSTANT * tempC - WIND_SPEED_CONSTANT_1 * windFactor + WIND_CHILL_CONSTANT * tempC * windFactor
 
-        return round(sensedTemperature * 1000) / 1000
+        return round(sensedTemperature * 100) / 100
     }
 }

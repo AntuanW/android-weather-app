@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.weatherapp.view.composables.WeatherCard
 import com.example.weatherapp.viewmodel.SearchWeatherViewModel
 import com.example.weatherapp.viewmodel.WeatherUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,15 +74,14 @@ class SearchWeatherView : ComponentActivity() {
 
                         is WeatherUiState.Success -> {
                             val data = (uiState as WeatherUiState.Success).data
-                            Column(
-                                modifier = Modifier.padding(top = 15.dp),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Text("Temperature category: ${data.temperature}")
-                                Text("Air Condition: ${data.airCondition}")
-                                Text("Forecast: ${data.forecast}")
-                                Text("Temperature: ${data.tempC}°C")
-                            }
+
+                            WeatherCard(
+                                temp = data.tempC,
+                                condition = data.airCondition,
+                                forecast = data.forecast,
+                                iconUrl = data.iconUrl,
+                                modifier = Modifier.padding(top = 20.dp)
+                            )
                         }
 
                         is WeatherUiState.Error -> {

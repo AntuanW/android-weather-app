@@ -6,5 +6,6 @@ data class WeatherSummary(
     val forecast: Forecast,
     val tempC: Double,
     val chanceOfRain: Int,
-    val chanceOfSnow: Int
+    val chanceOfSnow: Int,
+    val iconUrl: String,
 )
