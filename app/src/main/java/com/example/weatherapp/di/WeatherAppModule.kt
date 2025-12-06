@@ -8,6 +8,8 @@ import com.example.weatherapp.model.dto.WeatherSummaryFactory
 import com.example.weatherapp.model.service.WeatherService
 import com.example.weatherapp.model.service.WeatherSummaryService
 import com.example.weatherapp.model.service.client.WeatherApiInterface
+import com.example.weatherapp.model.service.location.CurrentLocationService
+import com.example.weatherapp.model.service.location.LocationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,5 +60,19 @@ object WeatherAppModule {
     @Singleton
     fun provideWeatherSummaryFactory(): WeatherSummaryFactory {
         return WeatherSummaryFactory()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrentLocationService(@ApplicationContext appContext: Context): CurrentLocationService {
+        return CurrentLocationService(appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationRepository(
+        currentLocationService: CurrentLocationService
+    ): LocationService {
+        return LocationService(currentLocationService)
     }
 }

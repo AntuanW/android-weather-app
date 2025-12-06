@@ -60,7 +60,12 @@ dependencies {
     val room_version = "2.8.3"
     val hilt_version = "2.57.1"
     val retrofit_version = "3.0.0"
-    val gson_version = "2.12.0"
+    val gson_converter_version = "2.12.0"
+    val gson_version = "2.13.0"
+    val gms_version = "21.3.0"
+    val nav_version = "2.9.6"
+
+    implementation("androidx.navigation:navigation-compose:${nav_version}")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
@@ -72,8 +77,13 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
     implementation("com.squareup.retrofit2:converter-scalars:$retrofit_version")
-    implementation("com.squareup.retrofit2:converter-gson:$gson_version")
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.squareup.retrofit2:converter-gson:$gson_converter_version")
+    implementation("com.google.code.gson:gson:$gson_version")
+
+    implementation("com.google.android.gms:play-services-location:$gms_version")
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

@@ -8,5 +8,9 @@ enum class AirCondition(
     OKAY("Okay"),
     PASSABLE("Passable"),
     UNHEALTHY("Unhealthy"),
-    VERY_UNHEALTHY("Very Unhealthy")
+    VERY_UNHEALTHY("Very Unhealthy");
+
+    override fun toString(): String {
+        return value
+    }
 }
