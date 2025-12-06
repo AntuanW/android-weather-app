@@ -63,6 +63,9 @@ dependencies {
     val gson_converter_version = "2.12.0"
     val gson_version = "2.13.0"
     val gms_version = "21.3.0"
+    val nav_version = "2.9.6"
+
+    implementation("androidx.navigation:navigation-compose:${nav_version}")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
