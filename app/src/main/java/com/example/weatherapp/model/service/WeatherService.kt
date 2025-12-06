@@ -1,5 +1,6 @@
 package com.example.weatherapp.model.service
 
+import android.util.Log
 import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.model.dto.WeatherSummaryFactory
 import com.example.weatherapp.model.dto.weather.WeatherSummary
@@ -18,6 +19,7 @@ class WeatherService @Inject constructor(
 
     suspend fun getWeather(location: String, days: Int): WeatherSummary {
         val weatherResponse: WeatherResponse = client.getForecast(API_KEY, location, days)
+        Log.i("WeatherService", "Retrieved weather for location: ${weatherResponse.location}")
         return weatherSummaryFactory.fromWeatherResponse(weatherResponse)
     }
 }
