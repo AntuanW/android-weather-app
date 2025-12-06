@@ -1,5 +1,6 @@
 package com.example.weatherapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.model.service.WeatherSummaryService
@@ -42,7 +43,7 @@ class SearchWeatherViewModel @Inject constructor(
         _uiState.value = WeatherUiState.Error(msg)
     }
 
-    fun fetchCurrentLocationName() {
+    fun fetchCurrentLocationNameAndWeather() {
         viewModelScope.launch {
             val city = locationService.getCurrentCityName()
 
@@ -50,7 +51,10 @@ class SearchWeatherViewModel @Inject constructor(
                 _uiState.value = WeatherUiState.Error("Failed to resolve your location")
             } else {
                 _location.value = city
+                fetchWeatherSummary(city)
             }
+
+            Log.i("SearchWeatherViewModel", "Current location: ${location.value}")
         }
     }
 }

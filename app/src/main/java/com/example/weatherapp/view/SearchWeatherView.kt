@@ -1,6 +1,7 @@
 package com.example.weatherapp.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -46,12 +48,13 @@ class SearchWeatherView : ComponentActivity() {
                 contract = ActivityResultContracts.RequestPermission()
             ) { isGranted ->
                 if (isGranted) {
-                    viewModel.fetchCurrentLocationName()
-                } else {
-                    viewModel.setError("Permission denied")
+                    viewModel.fetchCurrentLocationNameAndWeather()
                 }
             }
 
+            LaunchedEffect(Unit) {
+                permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            }
 
             Scaffold { innerPadding ->
                 Column(
@@ -68,7 +71,9 @@ class SearchWeatherView : ComponentActivity() {
                         trailingIcon = {
                             IconButton(
                                 onClick = {
+                                    Log.i("SearchView", "Try to get permission")
                                     permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                    Log.i("SearchView", "Asked to get permission")
                                 }
                             ) {
                                 Icon(Icons.Filled.MyLocation, contentDescription = "Use current location")
