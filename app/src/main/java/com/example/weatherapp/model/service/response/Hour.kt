@@ -25,8 +25,5 @@ data class Hour(
     @SerializedName("wind_kph")
     val windKph: Double,
 
-    @SerializedName("air_quality")
-    val airQuality: AirQuality,
-
 
 )

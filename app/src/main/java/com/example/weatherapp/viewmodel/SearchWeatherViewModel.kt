@@ -30,7 +30,7 @@ class SearchWeatherViewModel @Inject constructor(
                 val summary = weatherSummaryService.getWeatherSummary(location)
                 _uiState.value = WeatherUiState.Success(summary)
             } catch (e: Exception) {
-                _uiState.value = WeatherUiState.Error("Failed to load weather data for $location")
+                _uiState.value = WeatherUiState.Error("Failed to load weather data for $location: $e")
             }
         }
     }

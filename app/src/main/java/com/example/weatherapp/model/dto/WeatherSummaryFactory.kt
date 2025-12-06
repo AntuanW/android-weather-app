@@ -3,9 +3,14 @@ package com.example.weatherapp.model.dto
 import android.util.Log
 import com.example.weatherapp.model.dto.weather.AirCondition
 import com.example.weatherapp.model.dto.weather.Forecast
+import com.example.weatherapp.model.dto.weather.HourWeatherSummary
 import com.example.weatherapp.model.dto.weather.Temperature
 import com.example.weatherapp.model.dto.weather.WeatherSummary
+import com.example.weatherapp.model.service.response.ForecastDay
+import com.example.weatherapp.model.service.response.Hour
 import com.example.weatherapp.model.service.response.WeatherResponse
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -42,6 +47,7 @@ class WeatherSummaryFactory {
         val chanceOfRain: Int = weatherResponse.current.chanceOfRain
         val chanceOfSnow: Int = weatherResponse.current.chanceOfSnow
         val iconUrl: String = weatherResponse.current.condition.icon
+        val hourly: List<HourWeatherSummary> = parseForecastHourly(weatherResponse.forecast.forecastDay)
 
         return WeatherSummary(
             airCondition = airCondition,
@@ -50,7 +56,40 @@ class WeatherSummaryFactory {
             tempC = realTemp,
             chanceOfRain = chanceOfRain,
             chanceOfSnow = chanceOfSnow,
-            iconUrl = iconUrl
+            iconUrl = iconUrl,
+            weatherPerHour = hourly
+        )
+    }
+
+    private fun parseForecastHourly(forecastDays: List<ForecastDay>): List<HourWeatherSummary> {
+        val now = Instant.now().truncatedTo(ChronoUnit.HOURS)
+        val currentTimeSeconds = now.minusSeconds(3600).epochSecond
+        val maxTimeSeconds = now.plusSeconds(86400).epochSecond
+
+        Log.i("WeatherSummaryFactory", "currentTimeSeconds $currentTimeSeconds 24h later $maxTimeSeconds")
+        return forecastDays
+            .flatMap { it.hour }
+            .filter { it.timeEpoch in (currentTimeSeconds + 1)..<maxTimeSeconds }
+            .map { getWeatherForHour(it) }
+
+    }
+
+    private fun getWeatherForHour(hour: Hour): HourWeatherSummary {
+        val realTemp: Double = calculateRealTempC(hour.tempC, hour.windKph)
+        val temperature: Temperature = processTemperature(realTemp)
+        val forecast: Forecast = processForecast(hour.condition.text)
+        val chanceOfRain: Int = hour.chanceOfRain
+        val chanceOfSnow: Int = hour.chanceOfSnow
+        val iconUrl: String = hour.condition.icon
+        return HourWeatherSummary(
+            temperature = temperature,
+            forecast = forecast,
+            tempC = realTemp,
+            chanceOfRain = chanceOfRain,
+            chanceOfSnow = chanceOfSnow,
+            iconUrl = iconUrl,
+            time = hour.time,
+            timeEpoch = hour.timeEpoch
         )
     }
 
@@ -77,15 +116,12 @@ class WeatherSummaryFactory {
     }
 
     private fun processForecast(forecast: String): Forecast {
-        Log.d("WeatherSummaryFactory", "Received forecast: $forecast")
         return FORECAST_MAP.entries.firstOrNull {
             (_, keys) -> keys.any { it in forecast.lowercase() }
         }?.key ?: Forecast.UNKNOWN
     }
 
     private fun calculateRealTempC(tempC: Double, windKph: Double): Double {
-        Log.d("WeatherSummaryFactory", "Received temp c: $tempC and wind kph $windKph")
-
         val windFactor = windKph.pow(WIND_SPEED_CONSTANT_2)
 
         val sensedTemperature = BASE + TEMPERATURE_CONSTANT * tempC - WIND_SPEED_CONSTANT_1 * windFactor + WIND_CHILL_CONSTANT * tempC * windFactor
