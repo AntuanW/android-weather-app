@@ -65,7 +65,7 @@ fun MainWeatherCard(
                 modifier = Modifier.align(Alignment.TopStart)
             ) {
                 Text(
-                    text = "${data.tempC.toInt()}°",
+                    text = "${data.tempC}°C",
                     style = MaterialTheme.typography.displayLarge,
                     color = Color.White
                 )
