@@ -50,8 +50,8 @@ class SearchWeatherViewModel @Inject constructor(
             if (city == null) {
                 _uiState.value = WeatherUiState.Error("Failed to resolve your location")
             } else {
-                _location.value = city
-                fetchWeatherSummary(city)
+                _location.value = city.name
+                fetchWeatherSummary("${city.latitude},${city.longitude}")
             }
 
             Log.i("SearchWeatherViewModel", "Current location: ${location.value}")

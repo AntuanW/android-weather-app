@@ -20,7 +20,6 @@ class WeatherService @Inject constructor(
     suspend fun getWeather(location: String, days: Int): WeatherSummary {
         val weatherResponse: WeatherResponse = client.getForecast(API_KEY, location, days)
         Log.i("WeatherService", "Retrieved weather for location: ${weatherResponse.location}")
-        Log.d("WeatherService", "Weather: $weatherResponse")
         return weatherSummaryFactory.fromWeatherResponse(weatherResponse)
     }
 }

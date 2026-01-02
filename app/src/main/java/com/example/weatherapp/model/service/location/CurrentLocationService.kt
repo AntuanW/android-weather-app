@@ -35,7 +35,11 @@ class CurrentLocationService @Inject constructor(
             cancellationTokenSource.token
         ).addOnSuccessListener { location ->
             if (location != null) {
-                onResult(LocationResult(location.latitude, location.longitude))
+                onResult(LocationResult(
+                    location.latitude,
+                    location.longitude,
+                    ""
+                ))
             } else {
                 onResult(null)
             }
