@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,7 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.weatherapp.view.composables.WeatherCard
+import com.example.weatherapp.view.composables.HourlyForecastCard
+import com.example.weatherapp.view.composables.MainWeatherCard
 import com.example.weatherapp.view.utils.StringConstants
 import com.example.weatherapp.viewmodel.SearchWeatherViewModel
 import com.example.weatherapp.viewmodel.WeatherUiState
@@ -124,13 +124,17 @@ fun SearchWeatherScreen(viewModel: SearchWeatherViewModel, navController: NavCon
                 WeatherUiState.Loading -> CircularProgressIndicator()
                 is WeatherUiState.Success -> {
                     val data = (uiState as WeatherUiState.Success).data
-                    WeatherCard(
-                        temp = data.tempC,
-                        condition = data.airCondition,
-                        forecast = data.forecast,
-                        iconUrl = data.iconUrl,
-                        modifier = Modifier.padding(top = 20.dp)
-                    )
+                    Column {
+                        MainWeatherCard(
+                            data = data,
+                            modifier = Modifier.padding(top = 20.dp)
+                        )
+
+                        HourlyForecastCard(
+                            data = data,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
                 is WeatherUiState.Error -> Text("Error: ${(uiState as WeatherUiState.Error).message}")
             }

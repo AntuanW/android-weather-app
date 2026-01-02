@@ -11,18 +11,10 @@ import com.example.weatherapp.model.service.response.Hour
 import com.example.weatherapp.model.service.response.WeatherResponse
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import kotlin.math.pow
-import kotlin.math.round
 
 class WeatherSummaryFactory {
 
     private companion object {
-        const val BASE: Double = 13.12
-        const val TEMPERATURE_CONSTANT: Double = 0.6215
-        const val WIND_SPEED_CONSTANT_1: Double = 11.37
-        const val WIND_SPEED_CONSTANT_2: Double = 0.16
-        const val WIND_CHILL_CONSTANT: Double = 0.3965
-
         val FORECAST_MAP = mapOf(
             Forecast.CLEAR to listOf("clear", "sunny"),
             Forecast.FOGGY to listOf("fog", "mist"),
@@ -36,11 +28,7 @@ class WeatherSummaryFactory {
     }
 
     fun fromWeatherResponse(weatherResponse: WeatherResponse): WeatherSummary {
-        val realTemp: Double = calculateRealTempC(
-            weatherResponse.current.tempC,
-            weatherResponse.current.windKph
-        )
-
+        val realTemp: Double = weatherResponse.current.feelsLikeC
         val airCondition: AirCondition = processAirCondition(weatherResponse.current.airQuality.pm2_5)
         val temperature: Temperature = processTemperature(realTemp)
         val forecast: Forecast = processForecast(weatherResponse.current.condition.text)
@@ -49,6 +37,9 @@ class WeatherSummaryFactory {
         val iconUrl: String = weatherResponse.current.condition.icon
         val hourly: List<HourWeatherSummary> = parseForecastHourly(weatherResponse.forecast.forecastDay)
 
+        for (hour in hourly) {
+            Log.i("WeatherSummaryFactory", "hour: $hour")
+        }
         return WeatherSummary(
             airCondition = airCondition,
             temperature = temperature,
@@ -75,7 +66,7 @@ class WeatherSummaryFactory {
     }
 
     private fun getWeatherForHour(hour: Hour): HourWeatherSummary {
-        val realTemp: Double = calculateRealTempC(hour.tempC, hour.windKph)
+        val realTemp: Double = hour.feelsLikeC
         val temperature: Temperature = processTemperature(realTemp)
         val forecast: Forecast = processForecast(hour.condition.text)
         val chanceOfRain: Int = hour.chanceOfRain
@@ -119,13 +110,5 @@ class WeatherSummaryFactory {
         return FORECAST_MAP.entries.firstOrNull {
             (_, keys) -> keys.any { it in forecast.lowercase() }
         }?.key ?: Forecast.UNKNOWN
-    }
-
-    private fun calculateRealTempC(tempC: Double, windKph: Double): Double {
-        val windFactor = windKph.pow(WIND_SPEED_CONSTANT_2)
-
-        val sensedTemperature = BASE + TEMPERATURE_CONSTANT * tempC - WIND_SPEED_CONSTANT_1 * windFactor + WIND_CHILL_CONSTANT * tempC * windFactor
-
-        return round(sensedTemperature * 100) / 100
     }
 }
