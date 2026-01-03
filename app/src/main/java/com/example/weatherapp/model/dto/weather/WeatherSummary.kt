@@ -8,5 +8,6 @@ data class WeatherSummary(
     val chanceOfRain: Int,
     val chanceOfSnow: Int,
     val iconUrl: String,
-    val weatherPerHour: List<HourWeatherSummary>
+    val weatherPerHour: List<HourWeatherSummary>,
+    val lastUpdatedEpoch: Long
 )

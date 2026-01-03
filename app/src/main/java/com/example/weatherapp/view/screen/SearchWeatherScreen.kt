@@ -64,7 +64,6 @@ fun SearchWeatherScreen(
     }
 
     Scaffold { innerPadding ->
-        // Scrollable ekran + gradient tła
         val scrollState = rememberScrollState()
         Box(
             modifier = Modifier
@@ -85,7 +84,6 @@ fun SearchWeatherScreen(
             ) {
                 Spacer(Modifier.height(30.dp))
 
-                // Tytuł
                 Text(
                     text = StringConstants.APP_TITLE,
                     style = MaterialTheme.typography.headlineMedium,
@@ -94,7 +92,6 @@ fun SearchWeatherScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Wyszukiwanie lokalizacji
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -134,7 +131,6 @@ fun SearchWeatherScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Przyciski
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -168,7 +164,6 @@ fun SearchWeatherScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // UI State
                 when (uiState) {
                     WeatherUiState.Idle -> Text("")
                     WeatherUiState.Loading -> CircularProgressIndicator(color = Color.White)
@@ -179,7 +174,6 @@ fun SearchWeatherScreen(
                     is WeatherUiState.Success -> {
                         val data = (uiState as WeatherUiState.Success).data
                         Column {
-                            // Hero card z gradientem i dużą ikoną
                             MainWeatherCard(
                                 data = data,
                                 modifier = Modifier.padding(top = 20.dp)
@@ -187,7 +181,6 @@ fun SearchWeatherScreen(
 
                             Spacer(Modifier.height(16.dp))
 
-                            // 24-godzinna karta
                             HourlyForecastCard(
                                 data = data,
                                 modifier = Modifier.fillMaxWidth()
@@ -201,5 +194,3 @@ fun SearchWeatherScreen(
         }
     }
 }
-
-

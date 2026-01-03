@@ -36,9 +36,11 @@ class WeatherSummaryFactory {
         val chanceOfSnow: Int = weatherResponse.current.chanceOfSnow
         val iconUrl: String = weatherResponse.current.condition.icon
         val hourly: List<HourWeatherSummary> = parseForecastHourly(weatherResponse.forecast.forecastDay)
+        val lastUpdatedEpoch: Long = weatherResponse.current.lastUpdatedEpoch
 
         for (hour in hourly) {
             Log.i("WeatherSummaryFactory", "hour: $hour")
+            Log.i("WeatherSummaryFactory", "lastUpdatedEpoch: $lastUpdatedEpoch")
         }
         return WeatherSummary(
             airCondition = airCondition,
@@ -48,7 +50,8 @@ class WeatherSummaryFactory {
             chanceOfRain = chanceOfRain,
             chanceOfSnow = chanceOfSnow,
             iconUrl = iconUrl,
-            weatherPerHour = hourly
+            weatherPerHour = hourly,
+            lastUpdatedEpoch = lastUpdatedEpoch
         )
     }
 

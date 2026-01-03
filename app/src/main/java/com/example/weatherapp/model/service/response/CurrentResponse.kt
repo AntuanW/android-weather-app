@@ -23,4 +23,7 @@ data class CurrentResponse(
 
     @SerializedName("chance_of_snow")
     val chanceOfSnow: Int,
+
+    @SerializedName("last_updated_epoch")
+    val lastUpdatedEpoch: Long,
 )

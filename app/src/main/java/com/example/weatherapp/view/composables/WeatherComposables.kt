@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -48,6 +49,8 @@ fun MainWeatherCard(
     data: WeatherSummary,
     modifier: Modifier = Modifier
 ) {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+
     Card(
         modifier = modifier
             .padding(16.dp)
@@ -55,42 +58,76 @@ fun MainWeatherCard(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(data.forecast.gradient())
-                .padding(24.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
 
-            Column(
-                modifier = Modifier.align(Alignment.TopStart)
-            ) {
-                Text(
-                    text = "${data.tempC}°C",
-                    style = MaterialTheme.typography.displayLarge,
-                    color = Color.White
-                )
-
-                Text(
-                    text = data.forecast.name.lowercase().replaceFirstChar { it.uppercase() },
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White.copy(alpha = 0.9f)
-                )
-
-                Spacer(Modifier.height(12.dp))
-
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    WeatherChip("AQ", data.airCondition.toString())
-                    WeatherChip("Rain", "${data.chanceOfRain}%")
-                }
-            }
-
-            WeatherIcon(
-                iconUrl = data.iconUrl,
+            Box(
                 modifier = Modifier
-                    .size(140.dp)
-                    .align(Alignment.BottomEnd)
-                    .alpha(0.35f)
+                    .matchParentSize()
+                    .background(data.forecast.gradient())
             )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.Black.copy(alpha = 0.40f),
+                                Color.Black.copy(alpha = 0.20f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(24.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier.align(Alignment.TopStart)
+                ) {
+                    Text(
+                        text = "${data.tempC}°C",
+                        style = MaterialTheme.typography.displayLarge,
+                        color = Color.White
+                    )
+
+                    Text(
+                        text = data.forecast.name.lowercase()
+                            .replaceFirstChar { it.uppercase() },
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+
+                    Text(
+                        text = Instant
+                            .ofEpochSecond(data.lastUpdatedEpoch)
+                            .atZone(ZoneId.systemDefault())
+                            .format(formatter),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White.copy(alpha = 0.85f)
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        WeatherChip("AQ", data.airCondition.toString())
+                        WeatherChip("Rain", "${data.chanceOfRain}%")
+                    }
+                }
+
+                WeatherIcon(
+                    iconUrl = data.iconUrl,
+                    modifier = Modifier
+                        .size(140.dp)
+                        .align(Alignment.BottomEnd)
+                        .alpha(0.35f)
+                )
+            }
         }
     }
 }
