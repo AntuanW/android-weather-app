@@ -3,6 +3,7 @@ package com.example.weatherapp.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.model.service.GeocodeService
 import com.example.weatherapp.model.service.WeatherSummaryService
 import com.example.weatherapp.model.service.location.LocationService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchWeatherViewModel @Inject constructor(
     private val weatherSummaryService: WeatherSummaryService,
-    private val locationService: LocationService
+    private val locationService: LocationService,
+    private val geocodeService: GeocodeService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Idle)

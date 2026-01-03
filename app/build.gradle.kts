@@ -32,6 +32,7 @@ android {
         buildConfigField("String", "API_KEY", localProperties.getProperty("api_key") ?: "")
         buildConfigField("String", "GEO_API_KEY", localProperties.getProperty("geo_api_key") ?: "")
         buildConfigField("String", "BASE_URL", localProperties.getProperty("base_url") ?: "")
+        buildConfigField("String", "GEO_BASE_URL", localProperties.getProperty("geo_base_url") ?: "")
     }
 
     buildTypes {
