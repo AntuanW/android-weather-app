@@ -6,9 +6,9 @@ import com.example.weatherapp.model.dto.weather.Forecast
 import com.example.weatherapp.model.dto.weather.HourWeatherSummary
 import com.example.weatherapp.model.dto.weather.Temperature
 import com.example.weatherapp.model.dto.weather.WeatherSummary
-import com.example.weatherapp.model.service.response.ForecastDay
-import com.example.weatherapp.model.service.response.Hour
-import com.example.weatherapp.model.service.response.WeatherResponse
+import com.example.weatherapp.model.service.response.weather.ForecastDay
+import com.example.weatherapp.model.service.response.weather.Hour
+import com.example.weatherapp.model.service.response.weather.WeatherResponse
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 

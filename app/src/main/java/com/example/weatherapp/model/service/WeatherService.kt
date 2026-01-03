@@ -5,7 +5,7 @@ import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.model.dto.WeatherSummaryFactory
 import com.example.weatherapp.model.dto.weather.WeatherSummary
 import com.example.weatherapp.model.service.client.WeatherApiInterface
-import com.example.weatherapp.model.service.response.WeatherResponse
+import com.example.weatherapp.model.service.response.weather.WeatherResponse
 import javax.inject.Inject
 
 class WeatherService @Inject constructor(
