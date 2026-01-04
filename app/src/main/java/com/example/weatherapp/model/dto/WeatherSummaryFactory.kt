@@ -6,6 +6,7 @@ import com.example.weatherapp.model.dto.weather.Forecast
 import com.example.weatherapp.model.dto.weather.HourWeatherSummary
 import com.example.weatherapp.model.dto.weather.Temperature
 import com.example.weatherapp.model.dto.weather.WeatherSummary
+import com.example.weatherapp.model.service.response.weather.AirQuality
 import com.example.weatherapp.model.service.response.weather.ForecastDay
 import com.example.weatherapp.model.service.response.weather.Hour
 import com.example.weatherapp.model.service.response.weather.WeatherResponse
@@ -30,6 +31,7 @@ class WeatherSummaryFactory {
     fun fromWeatherResponse(weatherResponse: WeatherResponse): WeatherSummary {
         val realTemp: Double = weatherResponse.current.feelsLikeC
         val airCondition: AirCondition = processAirCondition(weatherResponse.current.airQuality.pm2_5)
+        val airQuality: AirQuality = weatherResponse.current.airQuality
         val temperature: Temperature = processTemperature(realTemp)
         val forecast: Forecast = processForecast(weatherResponse.current.condition.text)
         val chanceOfRain: Int = weatherResponse.current.chanceOfRain
@@ -37,10 +39,14 @@ class WeatherSummaryFactory {
         val iconUrl: String = weatherResponse.current.condition.icon
         val hourly: List<HourWeatherSummary> = parseForecastHourly(weatherResponse.forecast.forecastDay)
         val lastUpdatedEpoch: Long = weatherResponse.current.lastUpdatedEpoch
+        val humidity: Int = weatherResponse.current.humidity
+        val pressureMb: Int = weatherResponse.current.pressureMb
+        val windDir: String = weatherResponse.current.windDir
+
 
         for (hour in hourly) {
-            Log.i("WeatherSummaryFactory", "hour: $hour")
-            Log.i("WeatherSummaryFactory", "lastUpdatedEpoch: $lastUpdatedEpoch")
+            Log.d("WeatherSummaryFactory", "hour: $hour")
+            Log.d("WeatherSummaryFactory", "lastUpdatedEpoch: $lastUpdatedEpoch")
         }
         return WeatherSummary(
             airCondition = airCondition,
@@ -51,7 +57,11 @@ class WeatherSummaryFactory {
             chanceOfSnow = chanceOfSnow,
             iconUrl = iconUrl,
             weatherPerHour = hourly,
-            lastUpdatedEpoch = lastUpdatedEpoch
+            lastUpdatedEpoch = lastUpdatedEpoch,
+            airQuality = airQuality,
+            humidity = humidity,
+            pressureMb = pressureMb,
+            windDir = windDir
         )
     }
 

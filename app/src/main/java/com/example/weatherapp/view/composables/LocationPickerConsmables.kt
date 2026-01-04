@@ -71,19 +71,22 @@ fun LocationRow(
             .clickable { onClick() }
             .padding(14.dp)
     ) {
-
         Text(
-            text = location.name,
+            text = location.name ?: "Unknown",
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
             text = buildString {
-                if (location.state.isNotBlank()) {
-                    append(location.state)
-                    append(", ")
+                val state = location.state?.trim().takeIf { !it.isNullOrEmpty() }
+                val country = location.country?.trim().takeIf { !it.isNullOrEmpty() }
+
+                if (state != null) {
+                    append(state)
+                    if (country != null) append(", ")
                 }
-                append(location.country)
+
+                append(country ?: "")
             },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant

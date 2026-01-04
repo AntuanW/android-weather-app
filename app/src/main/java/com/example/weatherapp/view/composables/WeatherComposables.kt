@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -132,47 +128,6 @@ fun MainWeatherCard(
     }
 }
 
-
-@Composable
-fun HourlyForecastCard(
-    data: WeatherSummary,
-    modifier: Modifier = Modifier
-) {
-    val now = data.weatherPerHour.firstOrNull() ?: return
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
-
-    Card(
-        modifier = modifier.padding(16.dp),
-        shape = MaterialTheme.shapes.extraLarge
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-
-            Text(
-                text = "Next 24 hours",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            CurrentHourDetails(now)
-
-            Spacer(Modifier.height(16.dp))
-
-            HorizontalDivider()
-
-            Spacer(Modifier.height(12.dp))
-
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(data.weatherPerHour.take(24)) { hour ->
-                    HourForecastItem(hour, formatter)
-                }
-            }
-        }
-    }
-}
-
 @Composable
 fun CurrentHourDetails(hour: HourWeatherSummary) {
     Row(
@@ -207,40 +162,6 @@ fun CurrentHourDetails(hour: HourWeatherSummary) {
                 style = MaterialTheme.typography.bodySmall
             )
         }
-    }
-}
-
-@Composable
-fun HourForecastItem(hour: HourWeatherSummary, formatter: DateTimeFormatter) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .widthIn(min = 64.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(vertical = 8.dp)
-    ) {
-        Text(
-            text = Instant
-                .ofEpochSecond(hour.timeEpoch)
-                .atZone(ZoneId.systemDefault())
-                .format(formatter),
-            style = MaterialTheme.typography.labelSmall
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        WeatherIcon(
-            iconUrl = hour.iconUrl,
-            modifier = Modifier.size(32.dp)
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        Text(
-            text = "${hour.tempC}°C",
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
 
