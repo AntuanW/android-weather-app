@@ -90,8 +90,9 @@ object WeatherAppModule {
     @Provides
     @Singleton
     fun provideLocationRepository(
-        currentLocationService: CurrentLocationService
+        currentLocationService: CurrentLocationService,
+        geocodeService: GeocodeService
     ): LocationService {
-        return LocationService(currentLocationService)
+        return LocationService(currentLocationService, geocodeService)
     }
 }

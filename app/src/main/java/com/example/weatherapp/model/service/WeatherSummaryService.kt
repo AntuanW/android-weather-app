@@ -7,7 +7,7 @@ class WeatherSummaryService @Inject constructor(
     private val weatherService: WeatherService
 ) {
 
-    suspend fun getWeatherSummary(location: String, days: Int = 2): WeatherSummary {
-        return weatherService.getWeather(location, days)
+    suspend fun getWeatherSummary(lat: Double, lon: Double, days: Int = 2): WeatherSummary {
+        return weatherService.getWeather("$lat,$lon", days)
     }
 }

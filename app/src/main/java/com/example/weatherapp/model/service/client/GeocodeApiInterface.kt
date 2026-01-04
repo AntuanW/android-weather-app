@@ -9,7 +9,8 @@ interface GeocodeApiInterface {
     @GET("direct")
     suspend fun getCoordinatesByName(
         @Query("appid") appid: String,
-        @Query("q") location: String
+        @Query("q") location: String,
+        @Query("limit") limit: Int
     ) : List<GeocodeResponse>
 
     @GET("reverse")

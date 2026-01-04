@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.weatherapp.view.composables.HourlyForecastCard
+import com.example.weatherapp.view.composables.LocationPickerDialog
 import com.example.weatherapp.view.composables.MainWeatherCard
 import com.example.weatherapp.view.utils.StringConstants
 import com.example.weatherapp.viewmodel.SearchWeatherViewModel
@@ -65,12 +66,13 @@ fun SearchWeatherScreen(
 
     Scaffold { innerPadding ->
         val scrollState = rememberScrollState()
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF81D4FA), Color(0xFF0288D1))
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF81D4FA), Color(0xFF0288D1))
                     )
                 )
                 .padding(innerPadding)
@@ -82,6 +84,7 @@ fun SearchWeatherScreen(
                     .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Spacer(Modifier.height(30.dp))
 
                 Text(
@@ -95,7 +98,7 @@ fun SearchWeatherScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    elevation = CardDefaults.cardElevation(8.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -103,7 +106,7 @@ fun SearchWeatherScreen(
                     ) {
                         OutlinedTextField(
                             value = location,
-                            onValueChange = { viewModel.onLocationChange(it) },
+                            onValueChange = viewModel::onLocationChange,
                             placeholder = { Text(StringConstants.LOCATION_PLACEHOLDER) },
                             modifier = Modifier
                                 .weight(1f)
@@ -111,18 +114,18 @@ fun SearchWeatherScreen(
                             singleLine = true,
                             shape = RoundedCornerShape(28.dp),
                             colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Gray.copy(alpha = 0.6f),
-                                unfocusedIndicatorColor = Color.Gray.copy(alpha = 0.3f),
-                                unfocusedTextColor = Color.Black,
                                 focusedTextColor = Color.Black,
-                                cursorColor = Color.Black,
+                                unfocusedTextColor = Color.Black,
+                                focusedPlaceholderColor = Color.Gray,
                                 unfocusedPlaceholderColor = Color.Gray,
-                                focusedPlaceholderColor = Color.Gray
+                                cursorColor = Color.Black
                             )
                         )
 
                         IconButton(
-                            onClick = { permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION) }
+                            onClick = {
+                                permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            }
                         ) {
                             Icon(Icons.Filled.MyLocation, contentDescription = "Use current location")
                         }
@@ -136,27 +139,27 @@ fun SearchWeatherScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Button(
-                        onClick = { viewModel.fetchWeatherSummary(location) },
+                        onClick = { viewModel.searchLocation() },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF0288D1),
                             contentColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                        )
                     ) {
                         Text(StringConstants.SHOW_WEATHER_BTN)
                     }
 
                     Button(
-                        onClick = { navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN) },
+                        onClick = {
+                            navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN)
+                        },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF0288D1),
                             contentColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                        )
                     ) {
                         Text(StringConstants.LOCATIONS_CATALOG_BTN)
                     }
@@ -165,14 +168,20 @@ fun SearchWeatherScreen(
                 Spacer(Modifier.height(20.dp))
 
                 when (uiState) {
-                    WeatherUiState.Idle -> Text("")
-                    WeatherUiState.Loading -> CircularProgressIndicator(color = Color.White)
-                    is WeatherUiState.Error -> Text(
-                        "Error: ${(uiState as WeatherUiState.Error).message}",
-                        color = Color.Red
-                    )
+                    WeatherUiState.Idle -> {}
+
+                    WeatherUiState.Loading ->
+                        CircularProgressIndicator(color = Color.White)
+
+                    is WeatherUiState.Error ->
+                        Text(
+                            text = (uiState as WeatherUiState.Error).message,
+                            color = Color.Red
+                        )
+
                     is WeatherUiState.Success -> {
                         val data = (uiState as WeatherUiState.Success).data
+
                         Column {
                             MainWeatherCard(
                                 data = data,
@@ -187,6 +196,14 @@ fun SearchWeatherScreen(
                             )
                         }
                     }
+
+                    is WeatherUiState.LocationPicker -> {
+                        LocationPickerDialog(
+                            locations = (uiState as WeatherUiState.LocationPicker).locations,
+                            onSelect = viewModel::onLocationSelected,
+                            onDismiss = viewModel::dismissLocationPicker
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(40.dp))
@@ -194,3 +211,4 @@ fun SearchWeatherScreen(
         }
     }
 }
+
