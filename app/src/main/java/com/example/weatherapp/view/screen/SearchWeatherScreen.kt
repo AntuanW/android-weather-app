@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,6 +43,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.weatherapp.view.composables.FavouriteStar
 import com.example.weatherapp.view.composables.HourlyForecastCard
 import com.example.weatherapp.view.composables.LocationPickerDialog
 import com.example.weatherapp.view.composables.MainWeatherCard
@@ -53,6 +58,8 @@ fun SearchWeatherScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val location by viewModel.location.collectAsState()
+    val selectedLocation by viewModel.selectedLocation.collectAsState()
+    val isFavourite by viewModel.isFavourite.collectAsState()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -70,11 +77,7 @@ fun SearchWeatherScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color(0xFF81D4FA), Color(0xFF0288D1))
-                    )
-                )
+                .background(Brush.verticalGradient(listOf(Color(0xFF81D4FA), Color(0xFF0288D1))))
                 .padding(innerPadding)
         ) {
             Column(
@@ -96,38 +99,62 @@ fun SearchWeatherScreen(
                 Spacer(Modifier.height(20.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    shape = RoundedCornerShape(30.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                                )
+                            )
+                            .padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
                             value = location,
                             onValueChange = viewModel::onLocationChange,
-                            placeholder = { Text(StringConstants.LOCATION_PLACEHOLDER) },
+                            placeholder = { Text(StringConstants.LOCATION_PLACEHOLDER, color = Color(0x88000000)) },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp),
+                                .fillMaxHeight(),
                             singleLine = true,
-                            shape = RoundedCornerShape(28.dp),
+                            shape = RoundedCornerShape(24.dp),
                             colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                cursorColor = Color(0xFF0288D1),
                                 focusedTextColor = Color.Black,
-                                unfocusedTextColor = Color.Black,
-                                focusedPlaceholderColor = Color.Gray,
-                                unfocusedPlaceholderColor = Color.Gray,
-                                cursorColor = Color.Black
+                                unfocusedTextColor = Color.Black
                             )
                         )
 
                         IconButton(
-                            onClick = {
-                                permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                            }
+                            onClick = { permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION) },
+                            modifier = Modifier.size(44.dp)
                         ) {
-                            Icon(Icons.Filled.MyLocation, contentDescription = "Use current location")
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .background(
+                                        color = Color.White.copy(alpha = 0.25f),
+                                        shape = CircleShape
+                                    )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.MyLocation,
+                                    contentDescription = "Use current location",
+                                    tint = Color(0xFF0288D1),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -151,9 +178,7 @@ fun SearchWeatherScreen(
                     }
 
                     Button(
-                        onClick = {
-                            navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN)
-                        },
+                        onClick = { navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN) },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
@@ -170,23 +195,60 @@ fun SearchWeatherScreen(
                 when (uiState) {
                     WeatherUiState.Idle -> {}
 
-                    WeatherUiState.Loading ->
-                        CircularProgressIndicator(color = Color.White)
+                    WeatherUiState.Loading -> CircularProgressIndicator(color = Color.White)
 
-                    is WeatherUiState.Error ->
-                        Text(
-                            text = (uiState as WeatherUiState.Error).message,
-                            color = Color.Red
-                        )
+                    is WeatherUiState.Error -> Text(
+                        text = (uiState as WeatherUiState.Error).message,
+                        color = Color.Red
+                    )
 
                     is WeatherUiState.Success -> {
                         val data = (uiState as WeatherUiState.Success).data
 
-                        Column {
-                            MainWeatherCard(
-                                data = data,
-                                modifier = Modifier.padding(top = 20.dp)
-                            )
+                        Column(modifier = Modifier.background(
+                            color = Color(0x33FFFFFF),
+                            shape = RoundedCornerShape(16.dp)
+                        )) {
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = selectedLocation?.let { "${it.name}, ${it.country}" } ?: "",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        color = Color.White
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    FavouriteStar(
+                                        geo = selectedLocation,
+                                        isFavourite = isFavourite,
+                                        onToggleFavourite = viewModel::toggleFavourite,
+                                        modifier = Modifier
+                                            .background(
+                                                color = Color(0x66FFFFFF),
+                                                shape = RoundedCornerShape(12.dp)
+                                            )
+                                            .padding(4.dp)
+                                    )
+                                }
+
+
+                                Spacer(Modifier.height(8.dp))
+
+                                MainWeatherCard(
+                                    data = data,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
 
                             Spacer(Modifier.height(16.dp))
 
@@ -211,4 +273,3 @@ fun SearchWeatherScreen(
         }
     }
 }
-
