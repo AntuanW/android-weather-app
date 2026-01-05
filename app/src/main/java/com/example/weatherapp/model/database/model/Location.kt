@@ -17,4 +17,10 @@ data class Location (
 
     @ColumnInfo(name = "name")
     val name: String,
+
+    @ColumnInfo(name = "country")
+    val country: String?,
+
+    @ColumnInfo(name = "state")
+    val state: String?,
 )

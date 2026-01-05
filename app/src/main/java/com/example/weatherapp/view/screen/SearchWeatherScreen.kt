@@ -64,7 +64,7 @@ fun SearchWeatherScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) viewModel.fetchCurrentLocationNameAndWeather()
+        if (isGranted) viewModel.fetchCurrentLocationNameAndWeatherIfNeeded()
     }
 
     LaunchedEffect(Unit) {

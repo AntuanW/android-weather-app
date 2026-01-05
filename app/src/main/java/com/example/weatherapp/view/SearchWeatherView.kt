@@ -34,7 +34,7 @@ class SearchWeatherView : ComponentActivity() {
                 }
 
                 composable(StringConstants.LOCATIONS_CATALOG_SCREEN) {
-                    FavouriteLocationScreen(navController)
+                    FavouriteLocationScreen(viewModel, navController)
                 }
             }
         }

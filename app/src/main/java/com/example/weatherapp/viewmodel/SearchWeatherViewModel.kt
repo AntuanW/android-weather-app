@@ -3,6 +3,7 @@ package com.example.weatherapp.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.model.database.model.Location
 import com.example.weatherapp.model.repository.location.LocationRepository
 import com.example.weatherapp.model.service.GeocodeService
 import com.example.weatherapp.model.service.WeatherSummaryService
@@ -29,13 +30,15 @@ class SearchWeatherViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Idle)
     val uiState: StateFlow<WeatherUiState> = _uiState
 
+    private val _wasInitialLocationLoaded = MutableStateFlow(false)
+
     private val _selectedLocation = MutableStateFlow<GeocodeResponse?>(null)
     val selectedLocation: StateFlow<GeocodeResponse?> = _selectedLocation
 
     private val _location = MutableStateFlow("")
     val location: StateFlow<String> = _location
 
-    private val favourites = locationRepository.observeFavourites()
+    val favourites = locationRepository.observeFavourites()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val isFavourite: StateFlow<Boolean> = combine(_selectedLocation, favourites) { selected, favs ->
@@ -97,7 +100,14 @@ class SearchWeatherViewModel @Inject constructor(
         }
     }
 
-    fun fetchCurrentLocationNameAndWeather() {
+    fun fetchCurrentLocationNameAndWeatherIfNeeded() {
+        if (_wasInitialLocationLoaded.value) return
+
+        _wasInitialLocationLoaded.value = true
+        fetchCurrentLocationNameAndWeather()
+    }
+
+    private fun fetchCurrentLocationNameAndWeather() {
         viewModelScope.launch {
             _uiState.value = WeatherUiState.Loading
 
@@ -135,8 +145,29 @@ class SearchWeatherViewModel @Inject constructor(
         }
     }
 
+    fun removeFavourite(location: Location) {
+        viewModelScope.launch(Dispatchers.IO) {
+            locationRepository.removeFavourite(location.latitude, location.longitude)
+        }
+    }
+
+    fun searchFromFavourite(location: Location) {
+        viewModelScope.launch {
+            val geo = GeocodeResponse(
+                name = location.name,
+                lat = location.latitude,
+                lon = location.longitude,
+                country = location.country,
+                state = location.state
+            )
+
+            _selectedLocation.value = geo
+            fetchWeather(geo)
+        }
+    }
+
+
     private fun buildLocationLabel(geo: GeocodeResponse): String {
         return listOfNotNull(geo.name, geo.state, geo.country).joinToString(", ")
     }
 }
-

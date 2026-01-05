@@ -21,7 +21,9 @@ class LocationRepository @Inject constructor(
                 Location(
                     latitude = geo.lat,
                     longitude = geo.lon,
-                    name = listOfNotNull(geo.name, geo.state, geo.country).joinToString(", ")
+                    name = geo.name ?: "Unknown",
+                    country = geo.country,
+                    state = geo.state
                 )
             )
         }
