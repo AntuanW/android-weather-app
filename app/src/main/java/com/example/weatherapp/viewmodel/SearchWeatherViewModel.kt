@@ -107,6 +107,10 @@ class SearchWeatherViewModel @Inject constructor(
         fetchCurrentLocationNameAndWeather()
     }
 
+    fun toggleCurrentLocation() {
+        _wasInitialLocationLoaded.value = false
+    }
+
     private fun fetchCurrentLocationNameAndWeather() {
         viewModelScope.launch {
             _uiState.value = WeatherUiState.Loading

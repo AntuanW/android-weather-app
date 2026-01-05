@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,11 +33,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -61,6 +66,8 @@ fun SearchWeatherScreen(
     val selectedLocation by viewModel.selectedLocation.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 
+    var showRemoveDialog by remember { mutableStateOf(false) }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -77,7 +84,11 @@ fun SearchWeatherScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(Color(0xFF81D4FA), Color(0xFF0288D1))))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF81D4FA), Color(0xFF0288D1))
+                    )
+                )
                 .padding(innerPadding)
         ) {
             Column(
@@ -118,7 +129,12 @@ fun SearchWeatherScreen(
                         OutlinedTextField(
                             value = location,
                             onValueChange = viewModel::onLocationChange,
-                            placeholder = { Text(StringConstants.LOCATION_PLACEHOLDER, color = Color(0x88000000)) },
+                            placeholder = {
+                                Text(
+                                    StringConstants.LOCATION_PLACEHOLDER,
+                                    color = Color(0x88000000)
+                                )
+                            },
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
@@ -136,7 +152,12 @@ fun SearchWeatherScreen(
                         )
 
                         IconButton(
-                            onClick = { permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION) },
+                            onClick = {
+                                permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+                                viewModel.toggleCurrentLocation()
+                                viewModel.fetchCurrentLocationNameAndWeatherIfNeeded()
+                            },
                             modifier = Modifier.size(44.dp)
                         ) {
                             Box(
@@ -178,7 +199,9 @@ fun SearchWeatherScreen(
                     }
 
                     Button(
-                        onClick = { navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN) },
+                        onClick = {
+                            navController.navigate(StringConstants.LOCATIONS_CATALOG_SCREEN)
+                        },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
@@ -195,60 +218,63 @@ fun SearchWeatherScreen(
                 when (uiState) {
                     WeatherUiState.Idle -> {}
 
-                    WeatherUiState.Loading -> CircularProgressIndicator(color = Color.White)
+                    WeatherUiState.Loading ->
+                        CircularProgressIndicator(color = Color.White)
 
-                    is WeatherUiState.Error -> Text(
-                        text = (uiState as WeatherUiState.Error).message,
-                        color = Color.Red
-                    )
+                    is WeatherUiState.Error ->
+                        Text(
+                            text = (uiState as WeatherUiState.Error).message,
+                            color = Color.Red
+                        )
 
                     is WeatherUiState.Success -> {
                         val data = (uiState as WeatherUiState.Success).data
 
-                        Column(modifier = Modifier.background(
-                            color = Color(0x33FFFFFF),
-                            shape = RoundedCornerShape(16.dp)
-                        )) {
-                            Column(
-                                horizontalAlignment = Alignment.Start,
-                                modifier = Modifier.fillMaxWidth()
+                        Column(
+                            modifier = Modifier.background(
+                                color = Color(0x33FFFFFF),
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
+                                Text(
+                                    text = selectedLocation?.let { "${it.name}, ${it.country}" } ?: "",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = Color.White
+                                )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                FavouriteStar(
+                                    geo = selectedLocation,
+                                    isFavourite = isFavourite,
+                                    onToggleFavourite = { geo ->
+                                        if (isFavourite) {
+                                            showRemoveDialog = true
+                                        } else {
+                                            viewModel.toggleFavourite(geo)
+                                        }
+                                    },
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 12.dp, vertical = 6.dp),
-                                    horizontalArrangement = Arrangement.Start,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = selectedLocation?.let { "${it.name}, ${it.country}" } ?: "",
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        color = Color.White
-                                    )
-
-                                    Spacer(modifier = Modifier.width(8.dp))
-
-                                    FavouriteStar(
-                                        geo = selectedLocation,
-                                        isFavourite = isFavourite,
-                                        onToggleFavourite = viewModel::toggleFavourite,
-                                        modifier = Modifier
-                                            .background(
-                                                color = Color(0x66FFFFFF),
-                                                shape = RoundedCornerShape(12.dp)
-                                            )
-                                            .padding(4.dp)
-                                    )
-                                }
-
-
-                                Spacer(Modifier.height(8.dp))
-
-                                MainWeatherCard(
-                                    data = data,
-                                    modifier = Modifier.fillMaxWidth()
+                                        .background(
+                                            color = Color(0x66FFFFFF),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(4.dp)
                                 )
                             }
+
+                            Spacer(Modifier.height(8.dp))
+
+                            MainWeatherCard(
+                                data = data,
+                                modifier = Modifier.fillMaxWidth()
+                            )
 
                             Spacer(Modifier.height(16.dp))
 
@@ -271,5 +297,32 @@ fun SearchWeatherScreen(
                 Spacer(Modifier.height(40.dp))
             }
         }
+    }
+
+    if (showRemoveDialog && selectedLocation != null) {
+        AlertDialog(
+            onDismissRequest = { showRemoveDialog = false },
+            title = { Text("Remove from favourites?") },
+            text = {
+                Text("Do you really want to remove ${selectedLocation!!.name} from your favourites?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.toggleFavourite(selectedLocation!!)
+                        showRemoveDialog = false
+                    }
+                ) {
+                    Text("Remove")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showRemoveDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
