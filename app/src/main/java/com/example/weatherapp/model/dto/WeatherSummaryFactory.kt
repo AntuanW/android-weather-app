@@ -100,13 +100,13 @@ class WeatherSummaryFactory {
         )
     }
 
-    private fun processAirCondition(airCondition: Double): AirCondition {
+    private fun processAirCondition(pm25: Double): AirCondition {
         return when {
-            airCondition < 12 -> AirCondition.VERY_GOOD
-            airCondition < 36 -> AirCondition.GOOD
-            airCondition < 60 -> AirCondition.OKAY
-            airCondition < 84 -> AirCondition.PASSABLE
-            airCondition < 180 -> AirCondition.UNHEALTHY
+            pm25 <= 12 -> AirCondition.VERY_GOOD
+            pm25 <= 35 -> AirCondition.GOOD
+            pm25 <= 55 -> AirCondition.OKAY
+            pm25 <= 150 -> AirCondition.PASSABLE
+            pm25 <= 250 -> AirCondition.UNHEALTHY
             else -> AirCondition.VERY_UNHEALTHY
         }
     }

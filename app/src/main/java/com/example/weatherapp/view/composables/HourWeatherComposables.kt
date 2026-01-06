@@ -52,11 +52,7 @@ fun HourlyForecastCard(
     ) {
         Column(
             modifier = Modifier
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color(0xFF81D4FA), Color(0xFF0288D1))
-                    )
-                )
+                .background(Brush.verticalGradient(listOf(Color(0xFF81D4FA), Color(0xFF0288D1))))
                 .padding(20.dp)
         ) {
             Text(

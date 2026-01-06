@@ -49,10 +49,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.weatherapp.view.composables.AirQualityCard
 import com.example.weatherapp.view.composables.FavouriteStar
 import com.example.weatherapp.view.composables.HourlyForecastCard
 import com.example.weatherapp.view.composables.LocationPickerDialog
 import com.example.weatherapp.view.composables.MainWeatherCard
+import com.example.weatherapp.view.composables.WindAndAtmosphereCard
 import com.example.weatherapp.view.utils.StringConstants
 import com.example.weatherapp.viewmodel.SearchWeatherViewModel
 import com.example.weatherapp.viewmodel.WeatherUiState
@@ -285,12 +287,17 @@ fun SearchWeatherScreen(
 
                             Spacer(Modifier.height(8.dp))
 
-                            MainWeatherCard(
-                                data = data,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            MainWeatherCard(data = data, modifier = Modifier.fillMaxWidth())
 
-                            Spacer(Modifier.height(16.dp))
+                            Spacer(Modifier.height(8.dp))
+
+                            AirQualityCard(airQuality = data.airQuality, airCondition = data.airCondition)
+
+                            Spacer(Modifier.height(8.dp))
+
+                            WindAndAtmosphereCard(data = data)
+
+                            Spacer(Modifier.height(8.dp))
 
                             HourlyForecastCard(
                                 data = data,
@@ -318,7 +325,7 @@ fun SearchWeatherScreen(
             onDismissRequest = { showRemoveDialog = false },
             title = { Text("Remove from favourites?") },
             text = {
-                Text("Do you really want to remove ${selectedLocation!!.name} from your favourites?")
+                Text("Do you really want to remove ${selectedLocation!!.name}?")
             },
             confirmButton = {
                 TextButton(
