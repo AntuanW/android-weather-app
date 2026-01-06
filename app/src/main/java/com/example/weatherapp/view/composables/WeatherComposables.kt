@@ -129,11 +129,13 @@ fun MainWeatherCard(
 }
 
 @Composable
-fun CurrentHourDetails(hour: HourWeatherSummary) {
+fun CurrentHourDetails(
+    hour: HourWeatherSummary,
+    textColor: Color = Color.Unspecified
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
         WeatherIcon(
@@ -149,17 +151,20 @@ fun CurrentHourDetails(hour: HourWeatherSummary) {
                     .ofEpochSecond(hour.timeEpoch)
                     .atZone(ZoneId.systemDefault())
                     .format(formatter),
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.labelLarge,
+                color = textColor
             )
 
             Text(
                 text = "${hour.tempC}°C · ${hour.forecast}",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                color = textColor
             )
 
             Text(
                 text = "Rain ${hour.chanceOfRain}%  •  Snow ${hour.chanceOfSnow}%",
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = textColor
             )
         }
     }
