@@ -1,4 +1,4 @@
-package com.example.weatherapp.model.service.response
+package com.example.weatherapp.model.service.response.weather
 
 import com.google.gson.annotations.SerializedName
 
@@ -24,9 +24,6 @@ data class Hour(
 
     @SerializedName("wind_kph")
     val windKph: Double,
-
-    @SerializedName("air_quality")
-    val airQuality: AirQuality,
 
 
 )

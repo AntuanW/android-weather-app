@@ -1,4 +1,4 @@
-package com.example.weatherapp.model.service.response
+package com.example.weatherapp.model.service.response.weather
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,4 +23,15 @@ data class CurrentResponse(
 
     @SerializedName("chance_of_snow")
     val chanceOfSnow: Int,
+
+    val humidity: Int,
+
+    @SerializedName("pressure_mb")
+    val pressureMb: Int,
+
+    @SerializedName("wind_dir")
+    val windDir: String,
+
+    @SerializedName("last_updated_epoch")
+    val lastUpdatedEpoch: Long,
 )

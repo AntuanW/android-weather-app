@@ -30,7 +30,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "API_KEY", localProperties.getProperty("api_key") ?: "")
+        buildConfigField("String", "GEO_API_KEY", localProperties.getProperty("geo_api_key") ?: "")
         buildConfigField("String", "BASE_URL", localProperties.getProperty("base_url") ?: "")
+        buildConfigField("String", "GEO_BASE_URL", localProperties.getProperty("geo_base_url") ?: "")
     }
 
     buildTypes {
@@ -57,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.foundation)
     val room_version = "2.8.3"
     val hilt_version = "2.57.1"
     val retrofit_version = "3.0.0"

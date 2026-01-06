@@ -5,8 +5,10 @@ import androidx.room.Room
 import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.model.database.WeatherAppDatabase
 import com.example.weatherapp.model.dto.WeatherSummaryFactory
+import com.example.weatherapp.model.service.GeocodeService
 import com.example.weatherapp.model.service.WeatherService
 import com.example.weatherapp.model.service.WeatherSummaryService
+import com.example.weatherapp.model.service.client.GeocodeApiInterface
 import com.example.weatherapp.model.service.client.WeatherApiInterface
 import com.example.weatherapp.model.service.location.CurrentLocationService
 import com.example.weatherapp.model.service.location.LocationService
@@ -43,11 +45,28 @@ object WeatherAppModule {
 
         return retrofit.create(WeatherApiInterface::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideGeoRetrofitInstance(): GeocodeApiInterface {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.GEO_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        return retrofit.create(GeocodeApiInterface::class.java)
+    }
     
     @Provides
     @Singleton
     fun provideWeatherService(api: WeatherApiInterface, factory: WeatherSummaryFactory): WeatherService {
         return WeatherService(api, factory)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGeocodeService(api: GeocodeApiInterface): GeocodeService {
+        return GeocodeService(api)
     }
 
     @Provides
@@ -71,8 +90,9 @@ object WeatherAppModule {
     @Provides
     @Singleton
     fun provideLocationRepository(
-        currentLocationService: CurrentLocationService
+        currentLocationService: CurrentLocationService,
+        geocodeService: GeocodeService
     ): LocationService {
-        return LocationService(currentLocationService)
+        return LocationService(currentLocationService, geocodeService)
     }
 }
