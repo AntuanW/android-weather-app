@@ -15,5 +15,6 @@ data class WeatherSummary(
     val windDir: String,
     val iconUrl: String,
     val lastUpdatedEpoch: Long,
+    val localtime: String,
     val weatherPerHour: List<HourWeatherSummary>,
 )

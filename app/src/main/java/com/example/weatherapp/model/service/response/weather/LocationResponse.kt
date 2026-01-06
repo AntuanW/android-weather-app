@@ -5,5 +5,6 @@ data class LocationResponse(
     val region: String,
     val country: String,
     val lat: Double,
-    val lon: Double
+    val lon: Double,
+    val localtime: String,
 )

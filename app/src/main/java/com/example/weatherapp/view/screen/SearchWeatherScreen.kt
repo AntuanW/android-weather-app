@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -140,6 +141,19 @@ fun SearchWeatherScreen(
                                 .fillMaxHeight(),
                             singleLine = true,
                             shape = RoundedCornerShape(24.dp),
+
+                            trailingIcon = {
+                                if (location.isNotEmpty()) {
+                                    IconButton(onClick = { viewModel.clearLocation() }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Clear",
+                                            tint = Color(0xFF0288D1)
+                                        )
+                                    }
+                                }
+                            },
+
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,

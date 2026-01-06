@@ -42,6 +42,8 @@ class WeatherSummaryFactory {
         val humidity: Int = weatherResponse.current.humidity
         val pressureMb: Int = weatherResponse.current.pressureMb
         val windDir: String = weatherResponse.current.windDir
+        val localtime: String = weatherResponse.location.localtime
+
 
 
         for (hour in hourly) {
@@ -61,7 +63,8 @@ class WeatherSummaryFactory {
             airQuality = airQuality,
             humidity = humidity,
             pressureMb = pressureMb,
-            windDir = windDir
+            windDir = windDir,
+            localtime = localtime
         )
     }
 

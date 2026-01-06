@@ -9,12 +9,17 @@ import com.example.weatherapp.model.service.GeocodeService
 import com.example.weatherapp.model.service.WeatherSummaryService
 import com.example.weatherapp.model.service.location.LocationService
 import com.example.weatherapp.model.service.response.location.GeocodeResponse
+import com.example.weatherapp.view.utils.buildLocationLabel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -111,6 +116,12 @@ class SearchWeatherViewModel @Inject constructor(
         _wasInitialLocationLoaded.value = false
     }
 
+    fun clearLocation() {
+        _location.value = ""
+        _selectedLocation.value = null
+        _uiState.value = WeatherUiState.Idle
+    }
+
     private fun fetchCurrentLocationNameAndWeather() {
         viewModelScope.launch {
             _uiState.value = WeatherUiState.Loading
@@ -170,7 +181,30 @@ class SearchWeatherViewModel @Inject constructor(
         }
     }
 
-    private fun buildLocationLabel(geo: GeocodeResponse): String {
-        return listOfNotNull(geo.name, geo.state, geo.country).joinToString(", ")
-    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val favouritesWithWeather: StateFlow<List<FavouriteLocationUiState>> =
+        favourites
+            .flatMapLatest { locations ->
+                if (locations.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    flow {
+                        val result = locations.map { location ->
+                            val summary = try {
+                                weatherSummaryService.getWeatherSummary(
+                                    location.latitude,
+                                    location.longitude
+                                )
+                            } catch (e: Exception) {
+                                null
+                            }
+
+                            FavouriteLocationUiState(location, summary)
+                        }
+
+                        emit(result)
+                    }
+                }
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 }
