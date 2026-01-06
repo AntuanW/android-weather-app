@@ -170,7 +170,6 @@ class SearchWeatherViewModel @Inject constructor(
         }
     }
 
-
     private fun buildLocationLabel(geo: GeocodeResponse): String {
         return listOfNotNull(geo.name, geo.state, geo.country).joinToString(", ")
     }
