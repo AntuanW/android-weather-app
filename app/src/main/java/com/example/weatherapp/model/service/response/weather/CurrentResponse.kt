@@ -18,12 +18,6 @@ data class CurrentResponse(
     @SerializedName("feelslike_c")
     val feelsLikeC: Double,
 
-    @SerializedName("chance_of_rain")
-    val chanceOfRain: Int,
-
-    @SerializedName("chance_of_snow")
-    val chanceOfSnow: Int,
-
     val humidity: Int,
 
     @SerializedName("pressure_mb")

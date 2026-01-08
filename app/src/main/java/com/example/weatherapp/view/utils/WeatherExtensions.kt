@@ -10,19 +10,34 @@ import com.example.weatherapp.model.service.response.location.GeocodeResponse
 fun Forecast.gradient(): Brush {
     return when (this) {
         Forecast.CLEAR -> Brush.verticalGradient(
-            listOf(Color(0xFF4FC3F7), Color(0xFF81D4FA))
+            listOf(
+                Color(0xFF1565C0),
+                Color(0xFF42A5F5)
+            )
         )
         Forecast.CLOUDY -> Brush.verticalGradient(
-            listOf(Color(0xFF90A4AE), Color(0xFFCFD8DC))
+            listOf(
+                Color(0xFF455A64),
+                Color(0xFF90A4AE)
+            )
         )
-        Forecast.RAINY, Forecast.THUNDERY -> Brush.verticalGradient(
-            listOf(Color(0xFF455A64), Color(0xFF1C313A))
+        Forecast.RAINY, Forecast.THUNDERY, Forecast.HAIL -> Brush.verticalGradient(
+            listOf(
+                Color(0xFF263238),
+                Color(0xFF37474F)
+            )
         )
         Forecast.SNOWY -> Brush.verticalGradient(
-            listOf(Color(0xFFE3F2FD), Color.White)
+            listOf(
+                Color(0xFF546E7A),
+                Color(0xFFB0BEC5)
+            )
         )
         else -> Brush.verticalGradient(
-            listOf(Color(0xFFB0BEC5), Color(0xFFECEFF1))
+            listOf(
+                Color(0xFF37474F),
+                Color(0xFF90A4AE)
+            )
         )
     }
 }

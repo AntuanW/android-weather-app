@@ -291,18 +291,19 @@ fun SearchWeatherScreen(
 
                             Spacer(Modifier.height(8.dp))
 
+                            HourlyForecastCard(
+                                data = data,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(Modifier.height(8.dp))
+
                             AirQualityCard(airQuality = data.airQuality, airCondition = data.airCondition)
 
                             Spacer(Modifier.height(8.dp))
 
                             WindAndAtmosphereCard(data = data)
 
-                            Spacer(Modifier.height(8.dp))
-
-                            HourlyForecastCard(
-                                data = data,
-                                modifier = Modifier.fillMaxWidth()
-                            )
                         }
                     }
 

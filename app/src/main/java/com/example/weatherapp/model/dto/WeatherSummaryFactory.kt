@@ -34,8 +34,6 @@ class WeatherSummaryFactory {
         val airQuality: AirQuality = weatherResponse.current.airQuality
         val temperature: Temperature = processTemperature(realTemp)
         val forecast: Forecast = processForecast(weatherResponse.current.condition.text)
-        val chanceOfRain: Int = weatherResponse.current.chanceOfRain
-        val chanceOfSnow: Int = weatherResponse.current.chanceOfSnow
         val iconUrl: String = weatherResponse.current.condition.icon
         val hourly: List<HourWeatherSummary> = parseForecastHourly(weatherResponse.forecast.forecastDay)
         val lastUpdatedEpoch: Long = weatherResponse.current.lastUpdatedEpoch
@@ -44,12 +42,9 @@ class WeatherSummaryFactory {
         val windDir: String = weatherResponse.current.windDir
         val localtime: String = weatherResponse.location.localtime
 
+        val chanceOfRain: Int = hourly[0].chanceOfRain
+        val chanceOfSnow: Int = hourly[0].chanceOfSnow
 
-
-        for (hour in hourly) {
-            Log.d("WeatherSummaryFactory", "hour: $hour")
-            Log.d("WeatherSummaryFactory", "lastUpdatedEpoch: $lastUpdatedEpoch")
-        }
         return WeatherSummary(
             airCondition = airCondition,
             temperature = temperature,

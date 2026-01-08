@@ -34,6 +34,7 @@ import com.example.weatherapp.model.service.response.location.GeocodeResponse
 import com.example.weatherapp.view.utils.buildLocationLabel
 import com.example.weatherapp.view.utils.gradient
 import com.example.weatherapp.viewmodel.FavouriteLocationUiState
+import java.util.Locale
 
 @Composable
 fun FavouriteStar(
@@ -115,7 +116,7 @@ fun FavouriteLocationRow(
                 }
 
                 Text(
-                    String.format("%.4f, %.4f", location.latitude, location.longitude),
+                    String.format(Locale.US, "%.4f, %.4f", location.latitude, location.longitude),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.7f)
                 )
