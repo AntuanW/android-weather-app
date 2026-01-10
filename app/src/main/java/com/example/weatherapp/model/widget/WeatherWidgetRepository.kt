@@ -3,9 +3,11 @@ package com.example.weatherapp.model.widget
 import android.content.Context
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.weatherapp.model.dto.weather.AirCondition
 import com.example.weatherapp.model.dto.weather.Forecast
 import com.example.weatherapp.model.service.response.location.GeocodeResponse
 import com.example.weatherapp.view.widget.state.WeatherWidgetState
@@ -24,6 +26,8 @@ class WeatherWidgetRepository @Inject constructor(
 
     private val NAME = stringPreferencesKey("name")
     private val TEMP = doublePreferencesKey("temp")
+    private val AIR_CONDITION = stringPreferencesKey("air_condition")
+    private val downfall = intPreferencesKey("downfall")
     private val FORECAST = stringPreferencesKey("forecast")
     private val TIME = longPreferencesKey("time")
     private val LAT = doublePreferencesKey("lat")
@@ -50,10 +54,12 @@ class WeatherWidgetRepository @Inject constructor(
             locationName = name,
             tempC = data[TEMP] ?: 0.0,
             forecast = Forecast.valueOf(data[FORECAST] ?: "CLEAR"),
-            lastUpdated = data[TIME] ?: 0
+            lastUpdated = data[TIME] ?: 0,
+            downfall = data[downfall] ?: 0,
+            airCondition = AirCondition.valueOf(data[AIR_CONDITION] ?: "OKAY")
         )
 
-        val location = GeocodeResponse(name = name, lat = lat, lon = lon, country = "", state = "")
+        val location = GeocodeResponse(name = name, lat = lat, lon = lon, country = null, state = null)
         return location to weather
     }
 }

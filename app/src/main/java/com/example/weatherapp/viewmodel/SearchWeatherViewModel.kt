@@ -149,7 +149,9 @@ class SearchWeatherViewModel @Inject constructor(
                     locationName = locationName,
                     tempC = summary.tempC,
                     forecast = summary.forecast,
-                    lastUpdated = summary.lastUpdatedEpoch
+                    lastUpdated = summary.lastUpdatedEpoch,
+                    airCondition = summary.airCondition,
+                    downfall = maxOf(summary.chanceOfRain, summary.chanceOfRain)
                 )
                 widgetRepository.saveLocationAndWeather(city, widgetSate)
 
