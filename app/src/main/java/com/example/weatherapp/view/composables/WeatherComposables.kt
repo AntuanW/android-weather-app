@@ -112,7 +112,7 @@ fun MainWeatherCard(
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         WeatherChip("AQ", data.airCondition.toString())
-                        WeatherChip("Rain", "${data.chanceOfRain}%")
+                        WeatherChip("Downfall", "${maxOf(data.chanceOfRain, data.chanceOfSnow)}%")
                     }
                 }
 

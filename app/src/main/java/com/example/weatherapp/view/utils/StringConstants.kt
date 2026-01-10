@@ -5,7 +5,7 @@ object StringConstants {
     const val LOCATIONS_CATALOG_BTN = "Locations"
     const val LOCATIONS_CATALOG_TITLE = "Favourite locations"
     const val LOCATION_PLACEHOLDER = "Enter location"
-    const val APP_TITLE = "Weather App 🌤️"
+    const val APP_TITLE = "Weatherly 🌤️"
 
     // Navigation
     const val SEARCH_WEATHER_SCREEN = "search-weather"
