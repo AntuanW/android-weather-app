@@ -7,6 +7,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.ImageProvider
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -23,6 +25,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.example.weatherapp.R
+import com.example.weatherapp.view.SearchWeatherView
 import com.example.weatherapp.view.utils.widgetBackground
 import com.example.weatherapp.view.widget.state.WeatherWidgetState
 
@@ -34,7 +37,10 @@ fun WeatherWidgetContent(weather: WeatherWidgetState?) {
             modifier = GlanceModifier
                 .fillMaxSize()
                 .background(ColorProvider(Color.DarkGray))
-                .padding(16.dp),
+                .padding(16.dp)
+                .clickable(
+                    actionStartActivity<SearchWeatherView>()
+                ),
             contentAlignment = Alignment.TopStart
         ) {
             Text(
@@ -55,6 +61,9 @@ fun WeatherWidgetContent(weather: WeatherWidgetState?) {
             .fillMaxSize()
             .background(ImageProvider(bg))
             .padding(16.dp)
+            .clickable(
+                actionStartActivity<SearchWeatherView>()
+            )
     ) {
         Column(
             verticalAlignment = Alignment.Vertical.CenterVertically,
