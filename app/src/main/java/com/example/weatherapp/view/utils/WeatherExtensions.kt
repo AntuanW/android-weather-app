@@ -2,6 +2,7 @@ package com.example.weatherapp.view.utils
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.example.weatherapp.R
 import com.example.weatherapp.model.database.model.Location
 import com.example.weatherapp.model.dto.weather.AirCondition
 import com.example.weatherapp.model.dto.weather.Forecast
@@ -27,7 +28,7 @@ fun Forecast.gradient(): Brush {
                 Color(0xFF37474F)
             )
         )
-        Forecast.SNOWY -> Brush.verticalGradient(
+        Forecast.SNOWY, Forecast.SLEETY -> Brush.verticalGradient(
             listOf(
                 Color(0xFF546E7A),
                 Color(0xFFB0BEC5)
@@ -39,6 +40,16 @@ fun Forecast.gradient(): Brush {
                 Color(0xFF90A4AE)
             )
         )
+    }
+}
+
+fun Forecast.widgetBackground(): Int {
+    return when (this) {
+        Forecast.CLEAR -> R.color.clear
+        Forecast.CLOUDY -> R.color.cloudy
+        Forecast.RAINY, Forecast.THUNDERY, Forecast.HAIL -> R.color.rainy
+        Forecast.SNOWY, Forecast.SLEETY -> R.color.snowy
+        else -> R.color.def
     }
 }
 

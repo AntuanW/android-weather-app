@@ -9,7 +9,9 @@ import com.example.weatherapp.model.service.GeocodeService
 import com.example.weatherapp.model.service.WeatherSummaryService
 import com.example.weatherapp.model.service.location.LocationService
 import com.example.weatherapp.model.service.response.location.GeocodeResponse
+import com.example.weatherapp.model.widget.WeatherWidgetRepository
 import com.example.weatherapp.view.utils.buildLocationLabel
+import com.example.weatherapp.view.widget.state.WeatherWidgetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +31,8 @@ class SearchWeatherViewModel @Inject constructor(
     private val weatherSummaryService: WeatherSummaryService,
     private val locationService: LocationService,
     private val geocodeService: GeocodeService,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val widgetRepository: WeatherWidgetRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Idle)
@@ -133,11 +136,22 @@ class SearchWeatherViewModel @Inject constructor(
             }
 
             try {
-                _location.value = buildLocationLabel(city)
+                val locationName: String = buildLocationLabel(city)
+
+                _location.value = locationName
                 _selectedLocation.value = city
+
 
                 val summary = weatherSummaryService.getWeatherSummary(city.lat, city.lon)
                 _uiState.value = WeatherUiState.Success(summary)
+
+                val widgetSate = WeatherWidgetState(
+                    locationName = locationName,
+                    tempC = summary.tempC,
+                    forecast = summary.forecast,
+                    lastUpdated = summary.lastUpdatedEpoch
+                )
+                widgetRepository.saveLocationAndWeather(city, widgetSate)
 
             } catch (e: Exception) {
                 _uiState.value = WeatherUiState.Error("Weather load failed: ${e.message}")
