@@ -3,12 +3,10 @@ package com.example.weatherapp.model.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.weatherapp.model.database.dao.LocationDao
-import com.example.weatherapp.model.database.dao.WardrobeElementDao
 import com.example.weatherapp.model.database.model.Location
-import com.example.weatherapp.model.database.model.WardrobeElement
 
 @Database(
-    entities = [Location::class, WardrobeElement::class],
+    entities = [Location::class],
     version = 1
 )
 abstract class WeatherAppDatabase: RoomDatabase() {
@@ -18,6 +16,4 @@ abstract class WeatherAppDatabase: RoomDatabase() {
     }
 
     abstract fun locationDao(): LocationDao
-
-    abstract fun wardrobeDao(): WardrobeElementDao
 }
