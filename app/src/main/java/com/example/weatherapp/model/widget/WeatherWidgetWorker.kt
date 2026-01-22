@@ -40,8 +40,11 @@ class WeatherWidgetWorker @AssistedInject constructor(
             )
             widgetRepository.saveLocationAndWeather(location, state)
             WeatherWidget().updateAll(applicationContext)
+            Log.i("WeatherWidgetWorker", "Updated widget with location: $location")
+            Log.i("WeatherWidgetWorker", "Updated widget with state: $state")
             Result.success()
         } catch (e: Exception) {
+            Log.e("WeatherWidgetWorker", "Error updating widget: ${e.message}", e)
             Result.retry()
         }
     }

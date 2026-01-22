@@ -27,7 +27,7 @@ class WeatherWidgetRepository @Inject constructor(
     private val NAME = stringPreferencesKey("name")
     private val TEMP = doublePreferencesKey("temp")
     private val AIR_CONDITION = stringPreferencesKey("air_condition")
-    private val downfall = intPreferencesKey("downfall")
+    private val DOWNFALLL = intPreferencesKey("downfall")
     private val FORECAST = stringPreferencesKey("forecast")
     private val TIME = longPreferencesKey("time")
     private val LAT = doublePreferencesKey("lat")
@@ -41,6 +41,7 @@ class WeatherWidgetRepository @Inject constructor(
             it[TIME] = state.lastUpdated
             it[LAT] = location.lat
             it[LON] = location.lon
+            it[DOWNFALLL] = state.downfall
         }
     }
 
@@ -55,7 +56,7 @@ class WeatherWidgetRepository @Inject constructor(
             tempC = data[TEMP] ?: 0.0,
             forecast = Forecast.valueOf(data[FORECAST] ?: "CLEAR"),
             lastUpdated = data[TIME] ?: 0,
-            downfall = data[downfall] ?: 0,
+            downfall = data[DOWNFALLL] ?: 0,
             airCondition = AirCondition.valueOf(data[AIR_CONDITION] ?: "OKAY")
         )
 
