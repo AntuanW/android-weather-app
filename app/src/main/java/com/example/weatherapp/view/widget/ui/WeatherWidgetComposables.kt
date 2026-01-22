@@ -28,6 +28,9 @@ import com.example.weatherapp.R
 import com.example.weatherapp.view.SearchWeatherView
 import com.example.weatherapp.view.utils.widgetBackground
 import com.example.weatherapp.view.widget.state.WeatherWidgetState
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @SuppressLint("RestrictedApi")
 @Composable
@@ -88,6 +91,21 @@ fun WeatherWidgetContent(weather: WeatherWidgetState?) {
                     fontWeight = FontWeight.Bold
                 )
             )
+
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            val time = Instant
+                .ofEpochSecond(weather.lastUpdated)
+                .atZone(ZoneId.systemDefault())
+                .format(formatter)
+            Text(
+                text = "Last update: $time",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = ColorProvider(R.color.white)
+                )
+            )
+
+            Spacer(GlanceModifier.height(4.dp))
 
             Spacer(GlanceModifier.height(4.dp))
 
